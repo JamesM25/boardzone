@@ -1,0 +1,25 @@
+html {
+    background-color: #383838;
+    color: #eee;
+    text-align: center;
+}
+
+hr {
+    color: #111;
+}
+
+header {
+    text-align: center;
+    height: 240px;
+    margin-bottom: 32px;
+}
+header img {
+    height: 100%;
+    border-radius: 16px;
+    box-shadow: -4px 4px 20px #00000080;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: sans-serif;
+    color: #ff8078
+}
