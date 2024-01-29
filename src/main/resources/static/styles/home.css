@@ -23,3 +23,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: sans-serif;
     color: #ff8078
 }
+
+a {
+    color: #c77b76;
+}
+a:hover {
+    color: #ff8078;
+}
