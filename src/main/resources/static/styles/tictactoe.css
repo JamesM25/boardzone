@@ -1,0 +1,25 @@
+#tictactoe {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 150px;
+}
+
+#tictactoe div {
+    text-align: center;
+    font-size: 48px;
+    font-family: sans-serif;
+    height: 50px;
+}
+#tictactoe div:nth-child(even) {
+    background-color: #ddd;
+}
+#tictactoe div:nth-child(odd) {
+    background-color: #ccc;
+}
+
+#tictactoe div:hover {
+    background-color: #cbb;
+}
+#tictactoe div:empty:hover {
+    background-color: #f99;
+}
