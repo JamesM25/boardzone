@@ -9,6 +9,7 @@
     font-size: 48px;
     font-family: sans-serif;
     height: 50px;
+    user-select: none;
 }
 #tictactoe div:nth-child(even) {
     background-color: #ddd;
@@ -17,9 +18,10 @@
     background-color: #ccc;
 }
 
-#tictactoe div:hover {
+#tictactoe.active div:hover {
     background-color: #cbb;
 }
-#tictactoe div:empty:hover {
+#tictactoe.active div:empty:hover {
     background-color: #f99;
+    cursor: pointer;
 }

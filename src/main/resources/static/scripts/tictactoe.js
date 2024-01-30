@@ -1,3 +1,5 @@
+const API_URL = "http://localhost:8080/api/tictactoe";
+
 const BOARD_AREA = 9;
 
 const tictactoe = document.getElementById("tictactoe");
@@ -11,6 +13,12 @@ let game = {
     ],
     winner: 0
 };
+let history = {
+    id: 0,
+    moves: []
+};
+
+let waiting = false;
 
 const SYMBOL = [
     "", "X", "O"
@@ -23,14 +31,17 @@ const SYMBOL_ID = {
 };
 
 function placeSymbol(index) {
-    if (game.board[index] !== 0) {
+    if (game.board[index] !== 0 || waiting || game.winner !== 0) {
         return;
     }
 
     game.board[index] = 1;
+    history.moves.push(index);
     updateBoard();
 
-    fetch("http://localhost:8080/api/tictactoe", {
+    waiting = true;
+
+    fetch(`${API_URL}/game`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -41,13 +52,44 @@ function placeSymbol(index) {
             return;
         }
 
-        response.json().then(data => {
+        response.json().then(async data => {
+            let cpuMove = -1;
+
             for (let i = 0; i < BOARD_AREA; i++) {
-                game.board[i] = SYMBOL_ID[data.board[i]];
+                const oldSymbol = game.board[i];
+                const newSymbol = SYMBOL_ID[data.board[i]];
+
+                if (newSymbol !== oldSymbol) {
+                    game.board[i] = newSymbol;
+
+                    if (cpuMove >= 0) {
+                        throw new Error("Opponent cannot claim multiple tiles in a single turn");
+                    }
+
+                    cpuMove = i;
+                }
             }
-            game.winner = data.winner;
+
+            game.winner = SYMBOL_ID[data.winner];
+
+            if (cpuMove < 0 && game.winner !== 0) {
+                throw new Error("Opponent cannot skip their turn");
+            }
+
+            if (cpuMove >= 0) {
+                history.moves.push(cpuMove);
+            }
+
+            history = await fetch(`${API_URL}/history`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(history)
+            }).then(response => response.json());
 
             updateBoard();
+            waiting = false;
         });
     });
 }
@@ -57,17 +99,39 @@ function updateBoard() {
         boardElements[i].textContent = SYMBOL[game.board[i]];
     }
 
-    console.log(game.winner);
+    const hasWinner = game.winner !== 0;
+    const activeClass = "active";
+    if (hasWinner && tictactoe.classList.contains(activeClass)) {
+        tictactoe.classList.remove(activeClass);
+    } else if (!hasWinner && !tictactoe.classList.contains(activeClass)) {
+        tictactoe.classList.add(activeClass);
+    }
 }
 
-function initBoard() {
+async function initGame() {
     for (let i = 0; i < BOARD_AREA; i++) {
         const space = tictactoe.appendChild(document.createElement("div"));
         space.onclick = () => { placeSymbol(i); };
         boardElements.push(space);
     }
 
+    await fetch(`${API_URL}/history`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(history)
+    })
+    .then(response => response.json())
+    .then(data => {
+        /* Update the history object to store the ID assigned by the server.
+           Otherwise, PUT requests won't update the correct resource. */
+        history = data
+    });
+
+    tictactoe.classList.add("active");
+
     updateBoard();
 }
 
-initBoard();
+initGame();
