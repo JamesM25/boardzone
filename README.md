@@ -8,7 +8,7 @@
 
 ## Milestones
 - [x] Project creation
-- [ ] Writing a Web API
+- [x] Writing a Web API
 - [ ] Consuming a Web API
 - [ ] Deploying to the Cloud
 
@@ -21,3 +21,6 @@ As of the time of writing, I intend to implement checkers over the coming months
 
 Moves by AI opponents will be chosen on the backend, and communicated to the frontend via a web API.
 
+## API Documentation
+Documentation for the API may be found [here](https://documenter.getpostman.com/view/32287802/2s9YytfKpb)
+(last updated 1/30/2024.)

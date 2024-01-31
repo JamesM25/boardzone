@@ -1,0 +1,807 @@
+{
+	"info": {
+		"_postman_id": "821c044e-d48d-4063-a0c5-586f2f3b8973",
+		"name": "Boardzone",
+		"description": "## Schemas\n\nThe following schemas are used throughout the API.\n\n### Game State\n\n| Field Name | Type | Notes |\n| --- | --- | --- |\n| board | array | Array describing each tile on a 3x3 tic-tac-toe grid. Tiles are stored from left to right, top to bottom.  <br>  <br>The length of the array must be 9, otherwise the request is invalid.  <br>  <br>Elements may be one of the following strings: \"NONE\", \"X\", \"O\" OR an integer 0, 1, 2. |\n| winner | string | Describes which player won the game (\"X\" or \"O\"), or if the game is still ongoing (\"NONE\").  <br>  <br>Currently, this field is only required in the response body. If it is included in the request body, it will be ignored. |\n\n### Game History\n\n| Field Name | Type | Notes |\n| --- | --- | --- |\n| moves | array | Array of integers representing player turns.  <br>  <br>Valid elements are integers between 0 and 9 (inclusive), representing spaces on a 3x3 tic-tac-toe grid.  <br>  <br>Even moves represent X turns, and odd moves represent O moves. |\n| id | int | Resource identifier. |",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32287802"
+	},
+	"item": [
+		{
+			"name": "TicTacToe Move",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"board\": [\r\n        \"NONE\", \"NONE\", \"NONE\",\r\n        \"NONE\", \"X\",    \"NONE\",\r\n        \"NONE\", \"NONE\", \"NONE\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/game",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"game"
+					]
+				},
+				"description": "Submits a tic-tac-toe game state to the backend, which then determines the opponent's move, and responds with the resulting game state."
+			},
+			"response": [
+				{
+					"name": "TicTacToe Move",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"board\": [\r\n        \"NONE\", \"NONE\", \"NONE\",\r\n        \"NONE\", \"X\",    \"NONE\",\r\n        \"NONE\", \"NONE\", \"NONE\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/game",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"game"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:42:25 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"board\": [\n        \"NONE\",\n        \"NONE\",\n        \"NONE\",\n        \"NONE\",\n        \"X\",\n        \"NONE\",\n        \"O\",\n        \"NONE\",\n        \"NONE\"\n    ],\n    \"winner\": \"NONE\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create History",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"moves\": [ 0 ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history"
+					]
+				},
+				"description": "Creates a new game history resource on the server.\n\nThe request body uses the game history scheme. If an ID is included in the request body, it is ignored. If a resource is successfully created, it is assigned a new ID, and the full game history object is returned via the response body.\n\nStatus code is 201 CREATED if the resource was successfully created, or 400 BAD REQUEST if the request body is invalid.\n\nA request is invalid if any of the following are true:\n\n- The moves array contains duplicate elements\n- An element in the moves array is negative, greater than 8, or is not an integer.\n- The length of the moves array is greater than 9"
+			},
+			"response": [
+				{
+					"name": "Create History",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"moves\": [ 0 ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:42:39 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"moves\": [\n        0\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Invalid History (Duplicate Elements)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"moves\": [ 0, 0 ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history"
+					]
+				},
+				"description": "This request attempts to create an invalid game history. This request is invalid because the moves array contains duplicate elements.\n\nThe status code should always be 400 BAD REQUEST."
+			},
+			"response": [
+				{
+					"name": "Create Invalid History (Duplicate Elements)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"moves\": [ 0, 0 ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:44:38 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Create Invalid History (Invalid Indices)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"moves\": [ 0, 0 ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history"
+					]
+				},
+				"description": "This request attempts to create an invalid game history. This request is invalid because the moves array contains elements that are outside of the interval \\[0,9).\n\nThe status code should always be 400 BAD REQUEST."
+			},
+			"response": [
+				{
+					"name": "Create Invalid History (Duplicate Elements) Copy",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"moves\": [ -1, 9 ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:42:49 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "All Game Histories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history"
+					]
+				},
+				"description": "This request returns an array containing all game histories stored on the server.\n\nThe status code is always 200 OK."
+			},
+			"response": [
+				{
+					"name": "All Game Histories",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:43:03 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": 1,\n        \"moves\": [\n            0,\n            1,\n            4,\n            2,\n            8\n        ]\n    },\n    {\n        \"id\": 2,\n        \"moves\": [\n            0\n        ]\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Get History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history",
+						"1"
+					]
+				},
+				"description": "This request returns the game history with ID 1.\n\nIf a game history with this ID exists, it is returned through the response body, and the HTTP status code is 200 OK.\n\nIf a game history with this ID does not exist, the response body will be empty, and the status code is 404 NOT FOUND."
+			},
+			"response": [
+				{
+					"name": "Get History",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:43:08 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"moves\": [\n        0,\n        1,\n        4,\n        2,\n        8\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Invalid History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history/-999999",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history",
+						"-999999"
+					]
+				},
+				"description": "This request attempts to retrieve a game history with an ID that does not exist.\n\nThe status code is always 404 NOT FOUND."
+			},
+			"response": [
+				{
+					"name": "Get Invalid History",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history/-999999",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history",
+								"-999999"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:43:11 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Update History",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"moves\": [\r\n        0,\r\n        1,\r\n        4,\r\n        2,\r\n        8\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history"
+					]
+				},
+				"description": "This request updates or creates a game history resource on the server.\n\nThe request body uses the game history schema, with the ID field denoting which resource should be updated.\n\nIf a resource with the given ID already exists, its data is replaced with the content of the request body, which is then sent back via the response body, and the status code will be 200 OK.\n\nIf a resource with the given ID does NOT exist, a new resource is created according to the request body, and is assigned a new ID. The response body will include the new object, with its newly assigned ID, and the status code will be 201 CREATED.\n\nIf the request body is invalid, no resources are created or updated; the response body will be empty and the status code will be 400 BAD REQUEST."
+			},
+			"response": [
+				{
+					"name": "Update History",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"moves\": [\r\n        0,\r\n        1,\r\n        4,\r\n        2,\r\n        8\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:42:59 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"moves\": [\n        0,\n        1,\n        4,\n        2,\n        8\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete History",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/tictactoe/history/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tictactoe",
+						"history",
+						"1"
+					]
+				},
+				"description": "This request removes a game history resource with the given ID, provided as a path variable.\n\nIf a resource with the given ID exists, it will be removed from the server, its content will be sent in the response body and the status code will be 200 OK.\n\nIf a resource with the given ID does NOT exist, the response body will be empty and the status code will be 404 NOT FOUND."
+			},
+			"response": [
+				{
+					"name": "Delete History",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/tictactoe/history/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tictactoe",
+								"history",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 31 Jan 2024 02:43:14 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"moves\": [\n        0,\n        1,\n        4,\n        2,\n        8\n    ]\n}"
+				}
+			]
+		}
+	]
+}
