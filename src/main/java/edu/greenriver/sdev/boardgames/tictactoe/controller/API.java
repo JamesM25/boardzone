@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Implements routes that may be used to play tic-tac-toe against a CPU opponent, and record turn-by-turn game histories
+ * @author James Motherwell
+ * @version 1.0
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("api/tictactoe")
@@ -18,6 +23,11 @@ public class API {
     private GameService gameService;
     private HistoryService historyService;
 
+    /**
+     * Constructs a new API object
+     * @param service A GameService object (provided automatically by Spring)
+     * @param historyService A HistoryService object (provided automatically by Spring)
+     */
     public API(GameService service, HistoryService historyService) {
         this.gameService = service;
         this.historyService = historyService;

@@ -4,39 +4,23 @@ import edu.greenriver.sdev.boardgames.tictactoe.domain.GameState;
 import org.springframework.stereotype.Service;
 import edu.greenriver.sdev.boardgames.tictactoe.domain.Symbol;
 
+import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Implements methods to determine which moves an opponent should make in a single-player game of tic-tac-toe.
+ * @author James Motherwell
+ * @version 1.0
+ */
 @Service
 public class GameService {
     private static final int NUM_TILES = 9;
 
     private static final Symbol PLAYER_SYMBOL = Symbol.X;
     private static final Symbol CPU_SYMBOL = Symbol.O;
-    private static final int MAX_MINIMAX_DEPTH = 9;
+    private static final int MAX_MINIMAX_DEPTH = 5;
 
     private final int[] choices = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-
-    private int encodeGameState(Symbol[] game) {
-        assert game.length == NUM_TILES;
-
-        // Store the state of each tile as a 2-bit code, according to the TicTacToeSymbol enum.
-        int code = 0;
-        for (int i = 0; i < game.length; i++) {
-            code |= game[i].ordinal() << (i * 2);
-        }
-
-        return code;
-    }
-    private Symbol[] decodeGameState(int code) {
-        var game = new Symbol[NUM_TILES];
-
-        for (int i = 0; i < game.length; i++) {
-            int ordinal = code >> (i * 2) & 0x03;
-            game[i] = Symbol.values()[ordinal];
-        }
-
-        return game;
-    }
 
     private static boolean checkRow(Symbol[] board, int row) {
         return board[row*3] == board[row*3 + 1] && board[row*3] == board[row*3 + 2];
@@ -71,7 +55,18 @@ public class GameService {
         return Symbol.NONE;
     }
 
+    private void shuffleChoices() {
+        var rand = new Random();
+        for (int i = 0; i < choices.length; i++) {
+            int other = rand.nextInt(choices.length);
+            int temp = choices[i];
+            choices[i] = choices[other];
+            choices[other] = temp;
+        }
+    }
+
     private int minimaxRecurse(Symbol[] board, int depth) {
+        // Base case: Game has ended or maximum depth is reached
         var end = checkGameEnd(board);
         if (end == PLAYER_SYMBOL) {
             return depth - 100;
@@ -107,6 +102,12 @@ public class GameService {
 
         return bestRating;
     }
+
+    /**
+     * Determines the opponent's next move
+     * @param game The game state before the opponent's move
+     * @return The game state after the opponent's move
+     */
     public GameState getOpponentMove(GameState game) {
         var board = game.getBoard();
 
@@ -116,13 +117,8 @@ public class GameService {
             return game;
         }
 
-        var rand = new Random();
-        for (int i = 0; i < choices.length; i++) {
-            int j = rand.nextInt(choices.length);
-            int temp = choices[i];
-            choices[i] = choices[j];
-            choices[j] = temp;
-        }
+        // Shuffle the order moves are evaluated in to add variation in the opponent's tactics
+        shuffleChoices();
 
         int bestMove = -1;
         int bestMoveRating = Integer.MIN_VALUE;
@@ -154,8 +150,19 @@ public class GameService {
         return new GameState(board, winner);
     }
 
+    /**
+     * @param game Tic-tac-toe game state
+     * @return True if the game state is valid, otherwise false
+     */
     public boolean isTicTacToeGameValid(GameState game) {
         var board = game.getBoard();
         return board != null && board.length == NUM_TILES;
+    }
+
+    @Override
+    public String toString() {
+        return "GameService{" +
+                "choices=" + Arrays.toString(choices) +
+                '}';
     }
 }
