@@ -55,11 +55,19 @@ public class API {
 
     @PostMapping("history")
     private ResponseEntity<GameHistory> createHistory(@RequestBody GameHistory game) {
+        if (!historyService.isHistoryValid(game)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(historyService.addGame(game), HttpStatus.CREATED);
     }
 
     @PutMapping("history")
     private ResponseEntity<GameHistory> updateHistory(@RequestBody GameHistory game) {
+        if (!historyService.isHistoryValid(game)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         boolean exists = historyService.byId(game.getId()) != null;
         return new ResponseEntity<>(historyService.updateGame(game), exists ? HttpStatus.OK : HttpStatus.CREATED);
     }

@@ -4,6 +4,7 @@ import edu.greenriver.sdev.boardgames.tictactoe.data.HistoryRepository;
 import edu.greenriver.sdev.boardgames.tictactoe.domain.GameHistory;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -32,5 +33,25 @@ public class HistoryService {
 
     public GameHistory deleteGame(int gameId) {
         return repo.delete(gameId).orElse(null);
+    }
+
+    public boolean isHistoryValid(GameHistory game) {
+        var moves = game.getMoves();
+        if (moves == null || moves.size() > 9) {
+            return false;
+        }
+
+        var indices = new HashSet<Integer>();
+        for (int index : moves) {
+            if (index < 0 || index >= 9) {
+                return false;
+            }
+
+            if (!indices.add(index)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
