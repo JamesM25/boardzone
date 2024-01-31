@@ -60,4 +60,16 @@ public class HistoryRepository {
 
         return game;
     }
+
+    public Optional<GameHistory> delete(int gameId) {
+        int index = indexOfId(gameId);
+
+        if (index < 0) {
+            return Optional.empty();
+        } else {
+            var game = games.get(index);
+            games.remove(index);
+            return Optional.of(game);
+        }
+    }
 }

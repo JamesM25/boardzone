@@ -64,6 +64,16 @@ public class API {
         return new ResponseEntity<>(historyService.updateGame(game), exists ? HttpStatus.OK : HttpStatus.CREATED);
     }
 
+    @DeleteMapping("history/{gameId}")
+    private ResponseEntity<GameHistory> deleteHistory(@PathVariable int gameId) {
+        var game = historyService.deleteGame(gameId);
+        if (game == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(game, HttpStatus.OK);
+    }
+
     @Override
     public String toString() {
         return "API{" +

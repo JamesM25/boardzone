@@ -29,4 +29,8 @@ public class HistoryService {
     public GameHistory updateGame(GameHistory game) {
         return repo.save(game);
     }
+
+    public GameHistory deleteGame(int gameId) {
+        return repo.delete(gameId).orElse(null);
+    }
 }
