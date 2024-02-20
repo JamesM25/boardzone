@@ -38,3 +38,19 @@
         padding: 8px 16px;
     }
 }
+
+.history-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    .history {
+        padding: 8px;
+        margin: 8px;
+        border-radius: 8px;
+        box-shadow: 0 0 8px #0004;
+    
+        button {
+            padding: 4px 8px;
+        }
+    }
+}

@@ -193,6 +193,14 @@ async function renameHistory(game) {
     }
 }
 
+async function deleteHistory(game) {
+    const result = await fetch(`${API_URL}/history/${game}`, {
+        method: "DELETE"
+    });
+
+    refreshHistory();
+}
+
 async function refreshHistory() {
     const result = await fetch(`${API_URL}/history`, {
         method: "GET"
@@ -212,6 +220,7 @@ async function refreshHistory() {
                 <p>${game.date}</p>
                 <button onclick="viewHistory(${game.id})">View</button>
                 <button onclick="renameHistory(${game.id})">Rename</button>
+                <button onclick="deleteHistory(${game.id})">Delete</button>
             </div>
         `;
     }
