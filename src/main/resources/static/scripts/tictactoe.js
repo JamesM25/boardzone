@@ -126,7 +126,9 @@ async function initGame() {
         body: JSON.stringify(history)
     });
 
-    if (!response.ok) throw new Error();
+    if (!response.ok) {
+        throw new Error("Response was not OK");
+    }
 
     /* Update the history object to store the ID assigned by the server.
        Otherwise, PUT requests won't update the correct resource. */
@@ -138,7 +140,94 @@ async function initGame() {
     updateBoard();
 }
 
+async function viewHistory(game) {
+    const result = await fetch(`${API_URL}/history/${game}`, {
+        method: "GET"
+    });
+    const data = await result.json();
+
+    // Prevent the user from clicking the board
+    waiting = true;
+
+    document.getElementById("history-list").classList.add("invisible");
+
+    tictactoe.classList.remove("invisible");
+    tictactoe.classList.remove("active");
+
+
+    let index = 0;
+
+    setInterval(() => {
+        if (index >= data.moves.length) {
+            for (const elem of boardElements) {
+                elem.textContent = "";
+            }
+            index = 0;
+            return;
+        }
+
+        const symbol = index % 2 === 0 ? "X" : "O";
+        boardElements[data.moves[index]].textContent = symbol;
+
+        index++;
+    }, 1000);
+}
+
+async function renameHistory(game) {
+    const result = await fetch(`${API_URL}/history/${game}`, {
+        method: "GET"
+    });
+    const data = await result.json();
+
+    data.name = prompt("Please enter a new name", data.name);
+    if (data.name !== null) {
+        await fetch(`${API_URL}/history`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        refreshHistory();
+    }
+}
+
+async function refreshHistory() {
+    const result = await fetch(`${API_URL}/history`, {
+        method: "GET"
+    });
+    const data = await result.json();
+
+    const container = document.querySelector("#history-list .history-container");
+    container.innerHTML = "";
+
+    // data.sort((a, b) => a.date.localeCompare(b.date));
+
+    for (const game of data) {
+        container.innerHTML += `
+            <div class="history">
+                <h3>${game.name}</h3>
+                <p>Completed in ${game.moves.length} moves</p>
+                <p>${game.date}</p>
+                <button onclick="viewHistory(${game.id})">View</button>
+                <button onclick="renameHistory(${game.id})">Rename</button>
+            </div>
+        `;
+    }
+}
+
 initBoard();
+
+document.getElementById("btn-play").onclick = () => {
+    document.getElementById("initial-select").classList.add("invisible");
+    document.getElementById("difficulty-select").classList.remove("invisible");
+};
+document.getElementById("btn-history").onclick = () => {
+    document.getElementById("initial-select").classList.add("invisible");
+    document.getElementById("history-list").classList.remove("invisible");
+    refreshHistory();
+};
 
 for (const btn of document.querySelectorAll("#difficulty-select button")) {
     btn.onclick = () => {

@@ -9,12 +9,25 @@
 <body>
     <h1>Tic-tac-toe</h1>
 
-    <section id="difficulty-select">
+    <section id="initial-select">
+        <div class="tictactoe-btn-container">
+            <button class="tictactoe-btn" id="btn-play">Play</button>
+            <button class="tictactoe-btn" id="btn-history">View History</button>
+        </div>
+    </section>
+
+    <section id="difficulty-select" class="invisible">
         <h2>Choose a difficulty</h2>
         <div class="tictactoe-btn-container">
             <button class="tictactoe-btn" data-difficulty="EASY">Easy</button>
             <button class="tictactoe-btn" data-difficulty="MEDIUM">Medium</button>
             <button class="tictactoe-btn" data-difficulty="HARD">Hard</button>
+        </div>
+    </section>
+
+    <section id="history-list" class="invisible">
+        <h2>Game History</h2>
+        <div class="history-container">
         </div>
     </section>
 

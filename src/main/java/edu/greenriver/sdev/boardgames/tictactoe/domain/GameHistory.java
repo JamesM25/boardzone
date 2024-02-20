@@ -25,4 +25,5 @@ public class GameHistory {
     private List<Integer> moves = new ArrayList<>();
     private GameDifficulty difficulty;
     private LocalDateTime date = LocalDateTime.now();
+    private String name = "Untitled Game";
 }
