@@ -11,11 +11,13 @@ let game = {
         0, 0, 0,
         0, 0, 0
     ],
-    winner: 0
+    winner: 0,
+    difficulty: 0
 };
 let history = {
     id: 0,
-    moves: []
+    moves: [],
+    difficulty: 1
 };
 
 let waiting = false;
@@ -108,30 +110,40 @@ function updateBoard() {
     }
 }
 
-async function initGame() {
+function initBoard() {
     for (let i = 0; i < BOARD_AREA; i++) {
         const space = tictactoe.appendChild(document.createElement("div"));
         space.onclick = () => { placeSymbol(i); };
         boardElements.push(space);
     }
-
-    await fetch(`${API_URL}/history`, {
+}
+async function initGame() {
+    const response = await fetch(`${API_URL}/history`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(history)
-    })
-    .then(response => response.json())
-    .then(data => {
-        /* Update the history object to store the ID assigned by the server.
-           Otherwise, PUT requests won't update the correct resource. */
-        history = data
     });
 
+    if (!response.ok) throw new Error();
+
+    /* Update the history object to store the ID assigned by the server.
+       Otherwise, PUT requests won't update the correct resource. */
+    history = await response.json()
+
     tictactoe.classList.add("active");
+    tictactoe.classList.remove("invisible");
 
     updateBoard();
 }
 
-initGame();
+initBoard();
+
+for (const btn of document.querySelectorAll("#difficulty-select button")) {
+    btn.onclick = () => {
+        game.difficulty = history.difficulty = btn.dataset.difficulty;
+        document.getElementById("difficulty-select").classList.add("invisible");
+        initGame();
+    }
+}

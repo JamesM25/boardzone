@@ -30,3 +30,7 @@ a {
 a:hover {
     color: #ff8078;
 }
+
+.invisible, .invisible * {
+    display: none;
+}

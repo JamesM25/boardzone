@@ -3,11 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="/styles/home.css">
     <link rel="stylesheet" href="/styles/tictactoe.css">
 </head>
 <body>
-    <div id="tictactoe">
+    <h1>Tic-tac-toe</h1>
+
+    <section id="difficulty-select">
+        <h2>Choose a difficulty</h2>
+        <div class="tictactoe-btn-container">
+            <button class="tictactoe-btn" data-difficulty="EASY">Easy</button>
+            <button class="tictactoe-btn" data-difficulty="MEDIUM">Medium</button>
+            <button class="tictactoe-btn" data-difficulty="HARD">Hard</button>
+        </div>
+    </section>
+
+    <div id="tictactoe" class="invisible">
     </div>
+
     <script src="/scripts/tictactoe.js"></script>
 </body>
 </html>

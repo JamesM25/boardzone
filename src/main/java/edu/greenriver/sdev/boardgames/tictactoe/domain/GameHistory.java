@@ -1,9 +1,12 @@
 package edu.greenriver.sdev.boardgames.tictactoe.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +18,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class GameHistory {
+    @Id
     private int id;
     private List<Integer> moves = new ArrayList<>();
+    private GameDifficulty difficulty;
+    private LocalDateTime date = LocalDateTime.now();
 }

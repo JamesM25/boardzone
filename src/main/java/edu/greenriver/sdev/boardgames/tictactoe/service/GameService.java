@@ -1,5 +1,6 @@
 package edu.greenriver.sdev.boardgames.tictactoe.service;
 
+import edu.greenriver.sdev.boardgames.tictactoe.domain.GameDifficulty;
 import edu.greenriver.sdev.boardgames.tictactoe.domain.GameState;
 import org.springframework.stereotype.Service;
 import edu.greenriver.sdev.boardgames.tictactoe.domain.Symbol;
@@ -18,7 +19,6 @@ public class GameService {
 
     private static final Symbol PLAYER_SYMBOL = Symbol.X;
     private static final Symbol CPU_SYMBOL = Symbol.O;
-    private static final int MAX_MINIMAX_DEPTH = 5;
 
     private final int[] choices = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
@@ -65,14 +65,14 @@ public class GameService {
         }
     }
 
-    private int minimaxRecurse(Symbol[] board, int depth) {
+    private int minimaxRecurse(Symbol[] board, int depth, int maxDepth) {
         // Base case: Game has ended or maximum depth is reached
         var end = checkGameEnd(board);
         if (end == PLAYER_SYMBOL) {
             return depth - 100;
         } else if (end == CPU_SYMBOL) {
             return 1000 - depth;
-        } else if (depth > MAX_MINIMAX_DEPTH) {
+        } else if (depth >= maxDepth) {
             return depth;
         }
 
@@ -89,7 +89,7 @@ public class GameService {
 
             board[tile] = odd ? PLAYER_SYMBOL : CPU_SYMBOL;
 
-            int rating = minimaxRecurse(board, depth + 1);
+            int rating = minimaxRecurse(board, depth + 1, maxDepth);
             bestRating = odd ? Integer.min(rating, bestRating) : Integer.max(rating, bestRating);
 
             // Revert the board state
@@ -101,6 +101,44 @@ public class GameService {
         }
 
         return bestRating;
+    }
+
+    private int selectMove(Symbol[] board, GameDifficulty difficulty) {
+        // Shuffle the order moves are evaluated in to add variation in the opponent's tactics
+        shuffleChoices();
+
+        if (difficulty == GameDifficulty.EASY) {
+            // If the difficulty is easy, just select a random move on each turn.
+            for (int move : choices) {
+                if (board[move] == Symbol.NONE) {
+                    return move;
+                }
+            }
+        }
+
+        int recursionDepth = difficulty == GameDifficulty.MEDIUM ? 1 : 4;
+
+        int bestMove = -1;
+        int bestMoveRating = Integer.MIN_VALUE;
+
+        for (int i = 0; i < board.length; i++) {
+            int tile = choices[i];
+            if (board[tile] != Symbol.NONE) {
+                continue;
+            }
+
+            board[tile] = CPU_SYMBOL;
+
+            var rating = minimaxRecurse(board, 1, recursionDepth);
+            if (rating > bestMoveRating) {
+                bestMove = tile;
+                bestMoveRating = rating;
+            }
+
+            board[tile] = Symbol.NONE;
+        }
+
+        return bestMove;
     }
 
     /**
@@ -117,37 +155,17 @@ public class GameService {
             return game;
         }
 
-        // Shuffle the order moves are evaluated in to add variation in the opponent's tactics
-        shuffleChoices();
+        var difficulty = game.getDifficulty();
 
-        int bestMove = -1;
-        int bestMoveRating = Integer.MIN_VALUE;
-
-        for (int i = 0; i < board.length; i++) {
-            int tile = choices[i];
-            if (board[tile] != Symbol.NONE) {
-                continue;
-            }
-
-            board[tile] = CPU_SYMBOL;
-
-            var rating = minimaxRecurse(board, 1);
-            if (rating > bestMoveRating) {
-                bestMove = tile;
-                bestMoveRating = rating;
-            }
-
-            board[tile] = Symbol.NONE;
+        int move = selectMove(board, difficulty);
+        if (move < 0 || move >= NUM_TILES) {
+            return game;
         }
 
-        if (bestMove < 0) {
-            return null;
-        }
-
-        board[bestMove] = CPU_SYMBOL;
+        board[move] = CPU_SYMBOL;
         winner = checkGameEnd(board);
 
-        return new GameState(board, winner);
+        return new GameState(board, winner, difficulty);
     }
 
     /**

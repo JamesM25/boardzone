@@ -2,6 +2,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     width: 150px;
+    margin: auto;
 }
 
 #tictactoe div {
@@ -12,16 +13,28 @@
     user-select: none;
 }
 #tictactoe div:nth-child(even) {
-    background-color: #ddd;
+    background-color: #444;
 }
 #tictactoe div:nth-child(odd) {
-    background-color: #ccc;
+    background-color: #555;
 }
 
 #tictactoe.active div:hover {
-    background-color: #cbb;
+    background-color: #433;
 }
 #tictactoe.active div:empty:hover {
-    background-color: #f99;
+    background-color: #844;
     cursor: pointer;
+}
+
+.tictactoe-btn-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px;
+
+    .tictactoe-btn {
+        font-size: 1.25em;
+        padding: 8px 16px;
+    }
 }

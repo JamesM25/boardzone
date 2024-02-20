@@ -15,4 +15,5 @@ import lombok.NoArgsConstructor;
 public class GameState {
     private Symbol[] board;
     private Symbol winner;
+    private GameDifficulty difficulty;
 }
