@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/tictactoe";
+const API_URL = `${window.origin}/api/tictactoe`;
 
 const BOARD_AREA = 9;
 
