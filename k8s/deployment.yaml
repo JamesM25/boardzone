@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boardzone-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      project: boardzone
+  template:
+    metadata:
+      labels:
+        project: boardzone
+    spec:
+      containers:
+        - name: boardzone-container
+          image: jamesm25/boardzone
+          ports:
+            - containerPort: 8080

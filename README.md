@@ -10,7 +10,7 @@
 - [x] Project creation
 - [x] Writing a Web API
 - [x] Consuming a Web API
-- [ ] Deploying to the Cloud
+- [x] Deploying to the Cloud
 
 ## Project Description
 I aim to create a web application where the user may play a variety of board games against an AI opponent,
